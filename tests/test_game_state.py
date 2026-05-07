@@ -4,11 +4,12 @@ from game_state import CHOICES, MAX_WEEKS, GameState, weekly_event
 
 
 class GameStateTest(unittest.TestCase):
-    def test_choice_application_clamps_stats(self):
-        state = GameState(stress=98, health=2)
+    def test_choice_application_clamps_visible_stats(self):
+        state = GameState(health=2, community=99, legal=99)
         CHOICES[4].effect(state)
-        self.assertLessEqual(state.stress, 100)
         self.assertGreaterEqual(state.health, 0)
+        self.assertLessEqual(state.community, 100)
+        self.assertLessEqual(state.legal, 100)
 
     def test_finish_week_advances_and_charges_bills(self):
         state = GameState(cash=1000)
@@ -23,11 +24,19 @@ class GameStateTest(unittest.TestCase):
         network.effect(state)
         self.assertIn("cosigner_help", state.flags)
 
-    def test_weekly_events_rotate(self):
-        state = GameState(week=1, cash=1000)
+    def test_language_unlocks_translated_assistance_choice(self):
+        state = GameState(language_lessons=1)
+        translated = next(choice for choice in CHOICES if choice.title == "Use translated assistance")
+        self.assertFalse(translated.requirement(state))
+        state.apply(language=1)
+        self.assertTrue(translated.requirement(state))
+
+    def test_weekly_events_are_less_punishing_and_rotate(self):
+        state = GameState(week=1, cash=1000, health=88)
         message = weekly_event(state)
         self.assertTrue(message)
-        self.assertNotEqual(state.cash, 1000)
+        self.assertGreaterEqual(state.cash, 925)
+        self.assertGreaterEqual(state.health, 86)
 
     def test_default_game_not_over_before_final_week(self):
         state = GameState(week=MAX_WEEKS)
