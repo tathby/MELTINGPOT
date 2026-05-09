@@ -13,10 +13,10 @@ class GameState:
 
     week: int = 1
     cash: int = 720
-    health: int = 88
-    community: int = 22
-    legal: int = 14
-    rent_due: int = 275
+    health: int = 100
+    community: int = 50
+    legal: int = 50
+    rent_due: int = 175
     food_due: int = 80
     transit_due: int = 35
     legal_fees_paid: int = 0
@@ -110,7 +110,7 @@ class Choice:
 
 
 def _under_table(state: GameState) -> None:
-    state.apply(cash=360, health=-4, legal=-1, community=-1,
+    state.apply(cash=360, health=-4, legal=-10, community=-1,
                 note="Cash came fast, but the job kept you vulnerable and invisible.")
     if state.week in {3, 8} and state.community < 35:
         state.apply(cash=-70, health=-2, note="A manager shorted your pay because you had little leverage.")
@@ -118,7 +118,7 @@ def _under_table(state: GameState) -> None:
 
 def _wait_authorization(state: GameState) -> None:
     state.authorization_weeks = max(1, state.authorization_weeks)
-    state.apply(cash=80, health=-1, legal=10, community=1,
+    state.apply(cash=80, health=-1, legal=20, community=1,
                 note="You protected your case, even while paperwork moved slowly.")
 
 
@@ -136,7 +136,7 @@ def _stable_job(state: GameState) -> None:
 
 
 def _exploit_job(state: GameState) -> None:
-    state.apply(cash=430, health=-7, legal=-2,
+    state.apply(cash=430, health=-7, legal=-20,
                 note="The pay was better, but safety rules and overtime promises were ignored.")
 
 
@@ -149,7 +149,7 @@ def _gig_work(state: GameState) -> None:
 def _cheap_housing(state: GameState) -> None:
     state.rent_due = 225
     state.transit_due = 60
-    state.apply(cash=25, health=-4, community=1,
+    state.apply(cash=25, health=-10, community=10,
                 note="Overcrowded housing saved rent but made rest and commuting harder.")
 
 

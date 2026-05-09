@@ -133,7 +133,7 @@ def draw_status(surface: pygame.Surface, fonts: dict[str, pygame.font.Font], sta
     y += 80
 
     draw_wrapped(surface, fonts["small"],
-                 "Language no longer behaves like a score. Classes unlock options such as translated assistance and safer paperwork navigation.",
+                 "Meow.",
                  48, y, 250, MUTED)
 
 
