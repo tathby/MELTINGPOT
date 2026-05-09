@@ -41,6 +41,8 @@ class GameState:
 
     @property
     def status(self) -> str:
+        if self.legal <= 0:
+            return "legal crisis"
         if self.legal >= 70 or self.authorization_weeks >= 4:
             return "work authorized"
         if self.legal >= 35:
@@ -49,14 +51,16 @@ class GameState:
 
     @property
     def is_over(self) -> bool:
-        return self.week > MAX_WEEKS or self.cash < -350 or self.health <= 0
+        return self.week > MAX_WEEKS or self.cash < -350 or self.health <= 0 or self.legal <= 0
 
     @property
     def ending(self) -> str:
         if self.cash < -350:
             return "You ran out of options and had to rely on emergency housing and informal loans."
         if self.health <= 0:
-            return "Your health collapsed after too many untreated problems and impossible weeks."
+            return "Health reached zero, causing a medical crisis that ends the season."
+        if self.legal <= 0:
+            return "Legal stability reached zero, triggering an immigration crisis that ends the season."
         if self.week <= MAX_WEEKS:
             return "The struggle continues."
         score = self.cash + self.legal * 8 + self.community * 6 + self.health * 5
@@ -71,6 +75,14 @@ class GameState:
         self.community = min(100, max(0, self.community))
         self.legal = min(100, max(0, self.legal))
 
+    def record_crisis_consequences(self) -> None:
+        if self.health <= 0 and "health_crisis" not in self.flags:
+            self.flags.add("health_crisis")
+            self.log.append("Health reached zero: a medical crisis ends the season.")
+        if self.legal <= 0 and "legal_crisis" not in self.flags:
+            self.flags.add("legal_crisis")
+            self.log.append("Legal stability reached zero: an immigration crisis ends the season.")
+
     def apply(self, *, cash: int = 0, health: int = 0, community: int = 0, legal: int = 0,
               language: int = 0, credential: int = 0, business: int = 0, note: str = "") -> None:
         self.cash += cash
@@ -83,6 +95,7 @@ class GameState:
         if note:
             self.log.append(note)
         self.clamp()
+        self.record_crisis_consequences()
 
     def snapshot(self) -> dict[str, int]:
         return {"cash": self.cash, "health": self.health, "community": self.community, "legal": self.legal}
@@ -98,6 +111,7 @@ class GameState:
                 self.flags.add("authorized")
         self.week += 1
         self.clamp()
+        self.record_crisis_consequences()
         self.log = self.log[-7:]
 
 

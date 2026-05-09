@@ -38,6 +38,21 @@ class GameStateTest(unittest.TestCase):
         self.assertGreaterEqual(state.cash, 925)
         self.assertGreaterEqual(state.health, 86)
 
+    def test_zero_legal_status_ends_game_with_consequence(self):
+        state = GameState(legal=1)
+        state.apply(legal=-2)
+        self.assertTrue(state.is_over)
+        self.assertEqual(state.status, "legal crisis")
+        self.assertIn("legal_crisis", state.flags)
+        self.assertIn("Legal stability reached zero", state.ending)
+
+    def test_zero_health_ends_game_with_consequence(self):
+        state = GameState(health=1)
+        state.apply(health=-2)
+        self.assertTrue(state.is_over)
+        self.assertIn("health_crisis", state.flags)
+        self.assertIn("Health reached zero", state.ending)
+
     def test_default_game_not_over_before_final_week(self):
         state = GameState(week=MAX_WEEKS)
         self.assertFalse(state.is_over)
