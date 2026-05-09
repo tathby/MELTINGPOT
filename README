@@ -1,1 +1,35 @@
-SPENT style game where the user plays an an immigrant.
+# MELTINGPOT
+
+MELTINGPOT is a Pygame, SPENT-style survival game where the player navigates 12 weeks as an immigrant trying to balance cash, legal stability, health, housing, work, language access, and community support.
+
+## Theme
+
+The design principle is that every good choice still costs something. Short-term survival choices can damage long-term stability, while investments in paperwork, language classes, community, credentials, health, or safer housing can make this week's budget harder.
+
+The visible stats are intentionally focused: cash, health, community, and legal stability. Family obligations are represented through community, stress is represented through health, and language classes unlock future options rather than acting like another meter to optimize.
+
+## Run
+
+```bash
+python -m pip install -r requirements.txt
+python main.py
+```
+
+## Controls
+
+- Click a choice card.
+- Number keys 1-6 also select the visible choice cards.
+- Press `R` to restart after an ending.
+- Press `Esc` to quit.
+
+## Implemented systems
+
+- Legal/documentation tension: under-the-table work, waiting for authorization, lawyer fees, and legal stability.
+- Employment choices: stable low-wage work, risky higher-paying work, gig instability, and exploitation reporting.
+- Housing barriers: overcrowding, safer housing, co-signer barriers, rent/commute tradeoffs.
+- Language and culture: language study unlocks translated assistance and helps with contract/meeting events.
+- Family and remittances: family support abroad affects cash and community rather than adding another stat.
+- Risk and visibility: workplace inspections and retaliation risks.
+- Health access: clinic care versus avoiding treatment.
+- Community networks: support groups unlock help with jobs, housing, clinics, and emergencies.
+- Long-term paths: certification and small business progress.
